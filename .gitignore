@@ -1,0 +1,14 @@
+# editors
+/.idea
+/.vscode
+
+# dependencies
+/.env
+/node_modules
+/package-lock.json
+/yarn.lock
+
+# production
+/logs
+/public
+/server
