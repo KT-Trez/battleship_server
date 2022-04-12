@@ -3,6 +3,7 @@ import 'dotenv/config';
 import express from 'express';
 import {createServer} from 'http';
 import {Server} from 'socket.io';
+import {gameRouter} from './src/routes/game.js';
 import {
 	ClientToServerEvents,
 	InterServerEvents,
@@ -10,6 +11,7 @@ import {
 	SocketData
 } from './src/types/socket.js';
 import {routeLogger, systemLogger} from './src/utils/loggerUtil.js';
+import socketUtil from './src/utils/socketUtil.js';
 
 
 const app = express();
@@ -36,13 +38,17 @@ if (process.env.DEVELOPMENT)
 	});
 app.use(express.static('public'));
 app.use(cors({
-	credentials: true,
+	credentials: false,
 	origin: process.env.WEB_ORIGIN ?? '*'
 }));
 
 
 app.use(express.json());
+app.use('/game', gameRouter);
 
+io.on('connection', async socket => {
+	await socketUtil(socket);
+});
 
 export {
 	io

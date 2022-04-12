@@ -1,6 +1,6 @@
-import {MapSymbols} from '../types/enums';
-import {BoardMap} from '../types/interfaces';
-import Tile from './Tile';
+import {MapSymbols} from '../types/enums.js';
+import {BoardMap} from '../types/interfaces.js';
+import Tile from './Tile.js';
 
 
 export default class Board {
@@ -15,9 +15,9 @@ export default class Board {
 
 			for (let j = 0; j < width + 2; j++)
 				if (j === 0 || j === width + 1 || i === 0 || i === height + 1)
-					row.push(new Tile(j, i, null, MapSymbols.taken))
+					row.push(new Tile(j - 1, i - 1, [], MapSymbols.wall))
 				else
-					row.push(new Tile(j, i, null, MapSymbols.empty));
+					row.push(new Tile(j - 1, i - 1, [], MapSymbols.empty));
 
 			gameMap.push(row);
 		}
@@ -27,7 +27,7 @@ export default class Board {
 		this.map = gameMap;
 	}
 
-	getForceMap(forceID: number) {
+	getForceMap(forceID: string) {
 		const forceMap = [];
 
 		for (let i = 0; i < this.height; i++) {
@@ -37,7 +37,7 @@ export default class Board {
 			for (let j = 0; j < this.width; j++) {
 				const tile = row[j + 1];
 				forceRow.push({
-					taken: tile.forceID === forceID,
+					taken: tile.forceIDs.find(force => force === forceID),
 					x: j,
 					y: i
 				});
@@ -51,24 +51,24 @@ export default class Board {
 	iteratePath(x: number, y: number, horizontally: boolean, length: number) {
 		const path: Tile[] = [];
 		for (let i = 0; i < length; i++) {
-			const nextX = horizontally ? x + 1 + i : y + 1;
+			const nextX = horizontally ? x + 1 + i : x + 1;
 			const nextY = horizontally ? y + 1 : y + 1 + i;
 
-			const iteratedTile = this.map[nextY][nextX];
+			const nextTile = this.map[nextY][nextX];
 
-			if (iteratedTile.status === MapSymbols.taken && !iteratedTile.forceID)
+			if (nextTile.status === MapSymbols.wall)
 				return path;
 			else
-				path.push(iteratedTile);
+				path.push(nextTile);
 		}
 
 		return path;
 	}
 
-	writePath(path: Tile[], forceID: number | null, status: MapSymbols) {
+	writePath(path: Tile[], forceID: string | null, status: MapSymbols) {
 		for (let i = 0; i < path.length; i++)
 			Object.assign(path[i], {
-				forceID,
+				forceIDs: path[i].forceIDs.concat([forceID]),
 				status
 			});
 	}

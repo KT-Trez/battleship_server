@@ -1,18 +1,18 @@
-import {MapSymbols} from '../types/enums';
-import {Tile as BoardTile} from '../types/interfaces';
+import {MapSymbols} from '../types/enums.js';
+import {Tile as BoardTile} from '../types/interfaces.js';
 
 
 export default class Tile implements BoardTile {
-	forceID: number;
+	forceIDs: string[] | null;
 	status: MapSymbols;
 	x: number;
 	y: number;
 
-	constructor(x: number, y: number, forceID: number, status: MapSymbols) {
+	constructor(x: number, y: number, forceID: string[], status: MapSymbols) {
 		this.x = x;
 		this.y = y;
 
-		this.forceID = forceID;
+		this.forceIDs = forceID;
 		this.status = status;
 	}
 }

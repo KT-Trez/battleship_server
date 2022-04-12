@@ -1,4 +1,4 @@
 export enum MapSymbols {
 	empty,
-	taken
+	wall
 }

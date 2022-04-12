@@ -2,7 +2,7 @@ import {MapSymbols} from './enums';
 
 
 export interface Tile {
-	forceID: number | null;
+	forceIDs: string[];
 	status: MapSymbols;
 	x: number;
 	y: number;

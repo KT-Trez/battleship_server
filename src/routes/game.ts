@@ -1,5 +1,5 @@
 import express from 'express';
-import Game from '../classes/Game';
+import Game from '../classes/Game.js';
 
 
 const router = express.Router();
@@ -13,8 +13,8 @@ router.get('/map', (req, res) => {
 	if (!gameID || !forceID)
 		return res.sendStatus(404);
 
-	const game = Game.map.get(gameID);
-	const gameMap = game.board.getForceMap(parseInt(forceID));
+	const game = Game.map.get(parseInt(gameID));
+	const gameMap = game.board.getForceMap(forceID);
 
 	res.send(JSON.stringify(gameMap));
 });
