@@ -48,7 +48,7 @@ export default class Board {
 		return forceMap;
 	}
 
-	iteratePath(x: number, y: number, horizontally: boolean, length: number) {
+	getPath(x: number, y: number, horizontally: boolean, length: number) {
 		const path: Tile[] = [];
 		for (let i = 0; i < length; i++) {
 			const nextX = horizontally ? x + 1 + i : x + 1;

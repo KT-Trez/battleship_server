@@ -1,4 +1,5 @@
 export enum MapSymbols {
 	empty,
-	wall
+	wall,
+	ships
 }
