@@ -8,7 +8,12 @@ export function displayBoard(board: BoardMap, forceID: string) {
 	for (const boardRow of board) {
 		let row = '';
 		for (const rowTile of boardRow)
-			row += rowTile.forceIDs.includes(forceID) || rowTile.status === MapSymbols.wall ? 'x ' : '- ';
+			if (rowTile.forceIDs.includes(forceID))
+				row += 'x ';
+			else if (rowTile.status === MapSymbols.wall)
+				row += '# ';
+			else
+				row += '- ';
 
 		log += row + '\n';
 	}

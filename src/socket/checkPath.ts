@@ -18,7 +18,7 @@ export default function (socket: Socket) {
 			.filter(tile => tile);
 
 		callback({
-			available: pathToCheck.filter(tile => !tile.forceIDs.includes(socket.id)).length === length,
+			available: pathToCheck.filter(tile => !tile.forceIDs.includes(socket.id)).length === length && adjacentTiles.length === 0,
 			adjoinTilesArr: adjacentTiles,
 			correctPath: pathToCheck.filter(tile => !tile.forceIDs.includes(socket.id)),
 			takenPath: pathToCheck.filter(tile => tile.forceIDs.includes(socket.id))

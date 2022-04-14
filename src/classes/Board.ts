@@ -56,7 +56,7 @@ export default class Board {
 
 			const nextTile = this.map[nextY][nextX];
 
-			if (nextTile.status === MapSymbols.wall)
+			if (nextTile.status === MapSymbols.wall && y !== -1)
 				return path;
 			else
 				path.push(nextTile);
