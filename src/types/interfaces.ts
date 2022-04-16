@@ -1,12 +1,5 @@
-import {MapSymbols} from './enums';
+import {Tile} from './Tile.js';
 
-
-export interface Tile {
-	forceIDs: string[];
-	status: MapSymbols;
-	x: number;
-	y: number;
-}
 
 export type BoardMap = Row[];
 

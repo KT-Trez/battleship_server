@@ -1,9 +1,10 @@
 import {MapSymbols} from '../types/enums.js';
-import {Tile as BoardTile} from '../types/interfaces.js';
+import {Tile as BoardTile} from '../types/Tile.js';
 
 
 export default class Tile implements BoardTile {
-	forceIDs: string[] | null;
+	forceIDs: string[];
+	shotsFired: string[];
 	status: MapSymbols;
 	x: number;
 	y: number;
@@ -13,6 +14,7 @@ export default class Tile implements BoardTile {
 		this.y = y;
 
 		this.forceIDs = forceID;
+		this.shotsFired = [];
 		this.status = status;
 	}
 }

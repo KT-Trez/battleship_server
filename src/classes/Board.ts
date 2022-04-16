@@ -1,5 +1,6 @@
 import {MapSymbols} from '../types/enums.js';
 import {BoardMap} from '../types/interfaces.js';
+import {systemLogger} from '../utils/loggerUtil.js';
 import Tile from './Tile.js';
 
 
@@ -46,6 +47,15 @@ export default class Board {
 		}
 
 		return forceMap;
+	}
+
+	getTile(x: number, y: number) {
+		try {
+			return this.map[y + 1][x + 1];
+		} catch (error) {
+			systemLogger.log(1, 'Tried to get invalid tile: ' + error.message);
+			return this.map[Math.round(this.height / 2 + 1)][Math.round(this.width / 2 + 1)];
+		}
 	}
 
 	getPath(x: number, y: number, horizontally: boolean, length: number) {

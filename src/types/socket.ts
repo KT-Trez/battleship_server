@@ -7,6 +7,12 @@ export interface ClientToServerEvents {
 
 export interface InterServerEvents {}
 
-export interface ServerToClientEvents {}
+export interface ServerToClientEvents {
+	gameStarted: () => void;
+	hit: (shooterID: string, x: number, y: number, enemiesIDs: string[]) => void;
+	miss: (shooterID: string, x: number, y: number) => void;
+	nextTurn: (playerID: string, startedAt: Date, duration: number) => void;
+	win: (playerID: string) => void;
+}
 
 export interface SocketData {}
