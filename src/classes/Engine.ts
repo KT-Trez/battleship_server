@@ -30,13 +30,22 @@ export default class Engine {
 	private checkForWin(shipsLeft: number) {
 		if (shipsLeft <= 0) {
 			clearTimeout(this.turn);
+			console.log(this.turnPlayerID + ' wins!');
 
 			// todo: add multiple players
 			io.in(this.room.id.toString()).emit('win', this.turnPlayerID);
+			return true;
 		}
+		return false;
 	}
 
-	registerMove(playerID: string, x: number, y: number) {
+	private nextPlayer() {
+		this.turnPlayerIndex = (this.turnPlayerIndex + 1) % this.players.length;
+		this.turnPlayerID = this.players[this.turnPlayerIndex];
+		console.log(this.turnPlayerIndex, this.players);
+	}
+
+	registerShot(playerID: string, x: number, y: number) {
 		if (playerID !== this.turnPlayerID)
 			throw new Error('Invalid player tried to register move');
 
@@ -48,22 +57,25 @@ export default class Engine {
 
 		const enemyForcesIDsArr = tile.forceIDs.filter(forceID => forceID !== playerID);
 		if (enemyForcesIDsArr.length > 0) {
+			let hasSomeoneWon = false;
 			for (const player of tile.forceIDs.filter(forceID => forceID !== playerID)) {
 				const playerShipsCount = this.playersShips.get(player);
 				this.playersShips.set(player, playerShipsCount - 1);
 
-				this.checkForWin(playerShipsCount - 1);
+				hasSomeoneWon = this.checkForWin(playerShipsCount - 1);
 			}
 
 			io.to(this.room.id.toString()).emit('hit', this.turnPlayerID, x, y, enemyForcesIDsArr);
-
-			clearTimeout(this.turn);
-			this.startTurn();
+			if (!hasSomeoneWon)
+				this.startTurn();
 
 			return true;
 		}
 
-		io.to(this.room.id.toString()).emit('miss', this.turnPlayerID, x, y);
+		io.to(this.room.id.toString()).emit('miss', this.turnPlayerID, x, y, this.players.filter(playerID => playerID !== this.turnPlayerID));
+		this.nextPlayer();
+		this.startTurn();
+
 		return false;
 	}
 
@@ -74,12 +86,12 @@ export default class Engine {
 	private startTurn() {
 		io.to(this.room.id.toString()).emit('nextTurn', this.turnPlayerID, new Date(), this.turnMaxTime);
 
+		clearTimeout(this.turn);
 		this.turn = setTimeout(() => {
 			if (this.gameEnded)
 				return;
 
-			this.turnPlayerIndex++;
-			this.turnPlayerID = this.players[this.turnPlayerIndex];
+			this.nextPlayer();
 
 			this.startTurn();
 		}, this.turnMaxTime);
@@ -92,8 +104,9 @@ export default class Engine {
 		this.turnPlayerID = this.players[0];
 
 		console.log('Game ' + this.room.id + ' starting!');
+		console.log('Players:', this.players);
 		// todo: isolate socket out of engine
-		io.in(this.room.id.toString()).emit('gameStarted');
+		io.in(this.room.id.toString()).emit('gameStarted', this.players);
 		this.startTurn();
 	}
 }

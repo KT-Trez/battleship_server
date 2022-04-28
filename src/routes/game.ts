@@ -14,7 +14,7 @@ router.get('/map', (req, res) => {
 		return res.sendStatus(404);
 
 	const game = Room.map.get(parseInt(gameID));
-	const gameMap = game.board.getForceMap(forceID);
+	const gameMap = game.board.getForcePositions(forceID);
 
 	res.send(JSON.stringify(gameMap));
 });

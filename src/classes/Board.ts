@@ -1,5 +1,6 @@
 import {MapSymbols} from '../types/enums.js';
 import {BoardMap} from '../types/interfaces.js';
+import {displayBoard} from '../utils/devUtil.js';
 import {systemLogger} from '../utils/loggerUtil.js';
 import Tile from './Tile.js';
 
@@ -28,32 +29,31 @@ export default class Board {
 		this.map = gameMap;
 	}
 
-	getForceMap(forceID: string) {
-		const forceMap = [];
+	getForcePositions(forceID: string) {
+		const forceArr = [];
 
 		for (let i = 0; i < this.height; i++) {
-			const forceRow = [];
 			const row = this.map[i + 1];
 
 			for (let j = 0; j < this.width; j++) {
 				const tile = row[j + 1];
-				forceRow.push({
-					taken: tile.forceIDs.find(force => force === forceID),
-					x: j,
-					y: i
-				});
+				if (tile.forceIDs.find(force => force === forceID))
+					forceArr.push({
+						x: j,
+						y: i
+					});
 			}
-			forceMap.push(forceRow);
 		}
 
-		return forceMap;
+		displayBoard(this.map, forceID);
+		return forceArr;
 	}
 
 	getTile(x: number, y: number) {
 		try {
 			return this.map[y + 1][x + 1];
 		} catch (error) {
-			systemLogger.log(1, 'Tried to get invalid tile: ' + error.message);
+			systemLogger.log(1, `Tried to get invalid tile [x:${x+1} y:${y + 1}]: ${error.message}`);
 			return this.map[Math.round(this.height / 2 + 1)][Math.round(this.width / 2 + 1)];
 		}
 	}
