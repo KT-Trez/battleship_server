@@ -1,4 +1,8 @@
+/** game's basic config */
 const config = {
+	Engine: {
+		turnMaxTime: 60000
+	},
 	ShipsList: [
 		{
 			length: 4,

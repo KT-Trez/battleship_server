@@ -1,39 +1,47 @@
 import Engine from './Engine.js';
+import {Client} from '../types/interfaces.js';
 
 
 export default class Room {
 	static readonly map = new Map<number, Engine>();
 
-	readonly clients: Map<string, string>;
-	private clientsReadyCount: number;
+	private readonly clients: Client[] = [];
+	private clientsReadyCount = 0;
 	readonly id: number;
 
-	constructor(id: number) {
-		this.clients = new Map<string, string>();
-		this.clientsReadyCount = 0;
-		this.id = id;
+	constructor(gameID: number) {
+		this.id = gameID;
 	}
 
-	addClient(id: string, nick: string) {
-		this.clients.set(id, nick);
+	addClient(clientID: string, nick: string) {
+		this.clients.push({
+			id: clientID,
+			nick: nick ?? 'unnamed'
+		});
 	}
 
-	removeClient(id: string) {
-		this.clients.delete(id);
+	getClients() {
+		return this.clients;
 	}
 
-	setClientAsReady(ready: boolean) {
-		if (ready)
-			this.clientsReadyCount++;
-		else
-			this.clientsReadyCount--;
-		return {
-			clientsCount: this.clients.size,
-			clientsReadyCount: this.clientsReadyCount
-		}
+	removeClient(clientID: string) {
+		const client = this.clients.find(client => client.id === clientID);
+		const clientIndex = this.clients.indexOf(client);
+		this.clients.splice(clientIndex, 1);
 	}
 
 	save(engine: Engine) {
 		Room.map.set(this.id, engine);
+	}
+
+	toggleClientReadyStatus(isReady: boolean) {
+		if (isReady)
+			this.clientsReadyCount++;
+		else
+			this.clientsReadyCount--;
+		return {
+			clientsCount: this.clients.length,
+			clientsReadyCount: this.clientsReadyCount
+		}
 	}
 }

@@ -1,6 +1,10 @@
+import {Client} from './interfaces.js';
+
+
+// todo: update list of events and their types, that accepted by server
 export interface ClientToServerEvents {
 	createRoom: (callback: (roomID: number) => void) => void;
-	joinRoom: (roomID: number, nick: string) => void;
+	joinRoom: (roomID: number, nick: string, callback: (hasJoined: boolean) => void) => void;
 	leaveRoom: (roomID: number) => void;
 	registerShip: (roomID: number, x: number, y: number, horizontally: boolean, length: number) => void;
 	registerShipsRandom: (roomID: number, callback: (forceArr: { x: number, y: number }[]) => void) => void;
@@ -11,7 +15,7 @@ export interface InterServerEvents {
 }
 
 export interface ServerToClientEvents {
-	gameStarted: (playersIDs: string[]) => void;
+	gameStarted: (playersIDs: Client[]) => void;
 	hit: (shooterID: string, x: number, y: number, enemiesIDs: string[]) => void;
 	miss: (shooterID: string, x: number, y: number, enemiesIDs: string[]) => void;
 	nextTurn: (playerID: string, startedAt: Date, duration: number) => void;

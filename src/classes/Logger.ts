@@ -31,7 +31,7 @@ export default class Logger {
 	maxLevelLength: number;
 
 	/**
-	 * Creates new logger config instance.
+	 * Creates new logger config instance
 	 * @param defaultConfig - default config for all log levels.
 	 */
 	constructor(defaultConfig: DefaultLevelConfig) {

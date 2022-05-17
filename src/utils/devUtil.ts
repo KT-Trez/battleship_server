@@ -1,21 +1,28 @@
-import {MapSymbols} from '../types/enums.js';
-import {BoardMap} from '../types/interfaces.js';
+import {TileStatuses} from '../classes/Tile.js';
+import {BoardMap} from '../types/types.js';
 
 
-export function displayBoard(board: BoardMap, forceID: string) {
+/**
+ * Logs to terminal a game's board of a single player
+ * @param {BoardMap} board - game's board
+ * @param {string} playerID - ID of a player of whose board should be logged
+ */
+export function displayBoard(board: BoardMap, playerID: string) {
 	let log = '';
 
+	// iterate each tile & row to draw player's game board
 	for (const boardRow of board) {
 		let row = '';
 		for (const rowTile of boardRow)
-			if (rowTile.forceIDs.includes(forceID))
+			if (rowTile.containsPlayerShip(playerID))
 				row += 'x ';
-			else if (rowTile.status === MapSymbols.wall)
+			else if (rowTile.getStatus() === TileStatuses.wall)
 				row += '# ';
 			else
 				row += '- ';
 
 		log += row + '\n';
 	}
-	console.log(log);
+	// log board
+	console.info(log);
 }
