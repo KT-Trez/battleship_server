@@ -2,19 +2,14 @@ import {Socket} from 'socket.io';
 import Room from '../classes/Room.js';
 import {TileStatuses} from '../classes/Tile.js';
 import BoardService from '../services/BoardService.js';
+import isInputCorrectUtil from '../utils/isInputCorrectUtil.js';
 
 
 export default function (socket: Socket) {
 	socket.on('registerShip', (roomID, x, y, isHorizontal, shipLength, callback) => {
 		// check input
-		if (!Room.map.has(roomID))
-			throw new Error('There is no room of given ID: ' + roomID);
-		if (typeof x !== 'number' || typeof y !== 'number')
-			throw new Error('Coordinates must be of a type number. Got: ' + typeof x + ' ' + typeof y);
-		if (typeof isHorizontal !== 'boolean')
-			throw new Error('Ship orientation must of a type boolean. Got: ' + typeof isHorizontal);
-		if (typeof shipLength !== 'number')
-			throw new Error('Path shipLength must be of a type number. Got: ' + typeof shipLength);
+		if (isInputCorrectUtil({input: roomID, type: 'number'}, {input: x, type: 'number'}, {input: y, type: 'number'}, {input: isHorizontal, type: 'boolean'}, {input: shipLength, type: 'number'}))
+			return;
 
 		// get path to write
 		const engine = Room.map.get(roomID);

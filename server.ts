@@ -11,7 +11,7 @@ import {
 	SocketData
 } from './src/types/socket.js';
 import {routeLogger, systemLogger} from './src/utils/loggerUtil.js';
-import socketUtil from './src/utils/socketUtil.js';
+import socketUtil, {loadSocketEvents} from './src/utils/socketUtil.js';
 
 
 // initialize express
@@ -52,9 +52,10 @@ app.use(cors({
 // load all routes
 app.use('/game', gameRouter);
 
-// load socket events for incoming connections
+// load socket events and add them for all incoming connections
+await socketUtil();
 io.on('connection', async socket => {
-	await socketUtil(socket);
+	loadSocketEvents(socket);
 });
 
 export {

@@ -1,12 +1,13 @@
 import {Socket} from 'socket.io';
 import Room from '../classes/Room.js';
+import isInputCorrectUtil from '../utils/isInputCorrectUtil.js';
 
 
 export default function (socket: Socket) {
 	socket.on('registerShot', (roomID, x, y, callback) => {
 		// check input
-		if (!Room.map.has(roomID))
-			throw new Error('There is no room of given ID: ' + roomID);
+		if (isInputCorrectUtil({input: roomID, type: 'number'}, {input: x, type: 'number'}, {input: y, type: 'number'}))
+			return;
 
 		// register shot
 		const engine = Room.map.get(roomID);

@@ -11,7 +11,11 @@ const systemLogger = new Logger({
 /** Logger instance for less important event, that won't be saved to file */
 const routeLogger = new Logger({});
 
+/** Logger instance for all debug information */
+const debugLogger = new Logger({});
+
 export {
+	debugLogger,
 	systemLogger,
 	routeLogger
 };
