@@ -34,17 +34,32 @@ export default class BoardService {
 			.concat(engine.board.getTilesOnPath(x + (isShipHorizontal ? -1 : 0), y + (isShipHorizontal ? 0 : -1), isShipHorizontal, shipLength + 2))
 			.concat(engine.board.getTilesOnPath(x + (isShipHorizontal ? -1 : 1), y + (isShipHorizontal ? 1 : -1), isShipHorizontal, shipLength + 2))
 			.map(tile => {
-				if (tile.containsPlayerShip(placerID))
+				if (tile.containsShipOfPlayer(placerID))
 					return tile;
 			})
 			.filter(tile => tile);
 
 		// generate information about ship's placement
 		return {
-			isPlacementAvailable: tilesOnPath.filter(tile => !tile.containsPlayerShip(placerID)).length === shipLength && tilesTakenNextToPath.length === 0,
-			tilesAlreadyTaken: tilesOnPath.filter(tile => tile.containsPlayerShip(placerID)),
-			tilesContactingObstacles: tilesTakenNextToPath,
-			tilesWithCorrectPlacement: tilesOnPath.filter(tile => !tile.containsPlayerShip(placerID))
+			isPlacementAvailable: tilesOnPath.filter(tile => !tile.containsShipOfPlayer(placerID)).length === shipLength && tilesTakenNextToPath.length === 0,
+			tilesAlreadyTaken: tilesOnPath.filter(tile => tile.containsShipOfPlayer(placerID)).map(tile => {
+				return {
+					x: tile.x,
+					y: tile.y
+				}
+			}),
+			tilesContactingObstacles: tilesTakenNextToPath.map(tile => {
+				return {
+					x: tile.x,
+					y: tile.y
+				}
+			}),
+			tilesWithCorrectPlacement: tilesOnPath.filter(tile => !tile.containsShipOfPlayer(placerID)).map(tile => {
+				return {
+					x: tile.x,
+					y: tile.y
+				}
+			})
 		};
 	}
 
@@ -84,14 +99,14 @@ export default class BoardService {
 					// randomly pick coordinates and orientation
 					const x = Tools.getRandomIntInclusive(0, engine.board.getDimensions().width - ship.length);
 					const y = Tools.getRandomIntInclusive(0, engine.board.getDimensions().height - ship.length);
-					const horizontal = Boolean(Tools.getRandomIntInclusive(0, 1));
+					const isHorizontal = Boolean(Tools.getRandomIntInclusive(0, 1));
 
 					// check if ship can be placed; place new ship if possible, else repeat whole process
-					const newShipData = BoardService.checkShipPlacement(roomID, playerID, x, y, horizontal, ship.length);
+					const newShipData = BoardService.checkShipPlacement(roomID, playerID, x, y, isHorizontal, ship.length);
 					if (!newShipData.isPlacementAvailable)
 						placeShip();
 					else
-						engine.board.writeTiles(newShipData.tilesWithCorrectPlacement, playerID, TileStatuses.ships);
+						engine.board.writeTiles(engine.board.getTilesOnPath(x, y, isHorizontal, ship.length), playerID, TileStatuses.ships);
 				};
 				placeShip();
 			}

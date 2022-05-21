@@ -82,7 +82,7 @@ export default class Board {
 
 			for (let j = 0; j < this.width; j++) {
 				const tile = row[j + 1];
-				if (tile.containsPlayerShip(forceID))
+				if (tile.containsShipOfPlayer(forceID))
 					forceArr.push(tile);
 			}
 		}

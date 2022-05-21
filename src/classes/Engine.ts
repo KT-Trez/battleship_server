@@ -52,7 +52,7 @@ export default class Engine {
 			throw new Error('Invalid player tried to register move');
 
 		const tile = this.board.getTile(x, y);
-		if (tile.hasPlayerShot(playerID))
+		if (tile.hasBeenShotAtByPlayer(playerID))
 			throw new Error('Position has already been fired at');
 
 		tile.addShooters(playerID);
@@ -67,14 +67,14 @@ export default class Engine {
 				hasSomeoneWon = this.checkForWin(playerShipsCount - 1);
 			}
 
-			io.to(this.room.id.toString()).emit('hit', this.turnPlayerID, x, y, enemyForcesIDsArr);
+			io.to(this.room.id.toString()).emit('shot', this.turnPlayerID, 'hit', {x, y}, enemyForcesIDsArr);
 			if (!hasSomeoneWon)
 				this.startTurn();
 
 			return true;
 		}
 
-		io.to(this.room.id.toString()).emit('miss', this.turnPlayerID, x, y, this.players.filter(player => player.id !== this.turnPlayerID).map(player => player.id));
+		io.to(this.room.id.toString()).emit('shot', this.turnPlayerID, 'miss', {x, y}, this.players.filter(player => player.id !== this.turnPlayerID).map(player => player.id));
 		this.nextPlayer();
 		this.startTurn();
 
@@ -109,9 +109,10 @@ export default class Engine {
 			this.playersShips.set(player.id, this.allShipsElementsCount);
 		this.turnPlayerID = this.players[0].id;
 
+		// todo: debug only, remove later
 		console.log('Game ' + this.room.id + ' starting!');
 		console.log('Players:', this.players);
-		// todo: isolate socket out of engine
+
 		io.in(this.room.id.toString()).emit('gameStarted', this.players);
 		this.startTurn();
 	}

@@ -1,9 +1,10 @@
 import {Socket} from 'socket.io';
 import Room from '../classes/Room.js';
+import {ClientToServerEvents} from '../types/socket.js';
 import isInputCorrectUtil from '../utils/isInputCorrectUtil.js';
 
 
-export default function (socket: Socket) {
+export default function (socket: Socket<ClientToServerEvents>) {
 	socket.on('changeStatus', (roomID, readyStatus) => {
 		// check input
 		if (isInputCorrectUtil({input: roomID, type: 'number'}, {input: readyStatus, type: 'boolean'}))

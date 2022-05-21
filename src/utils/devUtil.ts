@@ -14,7 +14,7 @@ export function displayBoard(board: BoardMap, playerID: string) {
 	for (const boardRow of board) {
 		let row = '';
 		for (const rowTile of boardRow)
-			if (rowTile.containsPlayerShip(playerID))
+			if (rowTile.containsShipOfPlayer(playerID))
 				row += 'x ';
 			else if (rowTile.getStatus() === TileStatuses.wall)
 				row += '# ';

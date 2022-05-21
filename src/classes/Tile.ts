@@ -66,8 +66,7 @@ export default class Tile implements BoardTile {
 	 * @param {string} playerID - player's ID
 	 * @returns {boolean} - whether player placed his/her ship on this tile or not
 	 */
-	containsPlayerShip(playerID: string) {
-		// todo: change name to something more grammatically correct
+	containsShipOfPlayer(playerID: string) {
 		return this.shipownersIDsArr.includes(playerID);
 	}
 
@@ -77,7 +76,6 @@ export default class Tile implements BoardTile {
 	 * @returns {string[]}
 	 */
 	getShipownersExcludingOne(playerID: string) {
-		// todo: oddly specific method, refactor to more generic one
 		return this.shipownersIDsArr.filter(shipOwnerID => shipOwnerID !== playerID);
 	}
 
@@ -86,7 +84,7 @@ export default class Tile implements BoardTile {
 	 * @param {string} playerID - player's ID
 	 * @returns {boolean} - whether player shot this tile or not
 	 */
-	hasPlayerShot(playerID: string) {
+	hasBeenShotAtByPlayer(playerID: string) {
 		return this.shootersIDsArr.includes(playerID);
 	}
 
