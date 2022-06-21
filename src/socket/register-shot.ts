@@ -7,11 +7,16 @@ import isInputCorrectUtil from '../utils/isInputCorrectUtil.js';
 export default function (socket: Socket<ClientToServerEvents>) {
 	socket.on('registerShot', (roomID, coordinates, callback) => {
 		// check input
-		if (isInputCorrectUtil({input: roomID, type: 'number'}, {input: coordinates.x, type: 'number'}, {input: coordinates.y, type: 'number'}))
+		if (!isInputCorrectUtil({input: roomID, type: 'number'}, {input: coordinates.x, type: 'number'}, {input: coordinates.y, type: 'number'}))
 			return;
 
 		// register shot
 		const engine = Room.map.get(roomID);
+
+		// check if game has ended
+		if (engine.hasGameEnded())
+			return;
+
 		const result = engine.registerShot(socket.id, coordinates.x, coordinates.y);
 
 		// return shot status to the client

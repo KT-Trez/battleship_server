@@ -1,5 +1,4 @@
 import {BoardMap} from '../types/types.js';
-import {displayBoard} from '../utils/devUtil.js';
 import {systemLogger} from '../utils/loggerUtil.js';
 import Tile, {TileStatuses} from './Tile.js';
 import {ITile} from '../types/ITile.js'
@@ -87,8 +86,6 @@ export default class Board {
 			}
 		}
 
-		// todo: remove, debug only
-		displayBoard(this.map, forceID);
 		return forceArr;
 	}
 
@@ -98,9 +95,10 @@ export default class Board {
 	 * @param {number} y - vertical coordinate of a path's start
 	 * @param {boolean} isHorizontal - whether path is horizontal or vertical
 	 * @param {number} length - path's length
+	 * @param allowOverflow - if true, path might start in walls.
 	 * @returns {ITile[]} - tiles on the path
 	 */
-	getTilesOnPath(x: number, y: number, isHorizontal: boolean, length: number) {
+	getTilesOnPath(x: number, y: number, isHorizontal: boolean, length: number, allowOverflow?: boolean) {
 		const path = [];
 		for (let i = 0; i < length; i++) {
 			// calculate coordinates of the next tile on path (taking axis orientation into account)
@@ -110,7 +108,7 @@ export default class Board {
 			const nextTile = this.map[nextY][nextX];
 
 			// check if tile is a wall, if not, add to the returned path
-			if (nextTile.getStatus() === TileStatuses.wall && y !== -1)
+			if (nextTile.getStatus() === TileStatuses.wall && !allowOverflow && x === -1 && y === -1)
 				return path;
 			else
 				path.push(nextTile);

@@ -30,9 +30,9 @@ export default class BoardService {
 		const tilesOnPath = engine.board.getTilesOnPath(x, y, isShipHorizontal, shipLength);
 
 		// get all tiles around ship, that contain or touch other friendly ships
-		const tilesTakenNextToPath = engine.board.getTilesOnPath(x - 1, y - 1, isShipHorizontal, shipLength + 2)
-			.concat(engine.board.getTilesOnPath(x + (isShipHorizontal ? -1 : 0), y + (isShipHorizontal ? 0 : -1), isShipHorizontal, shipLength + 2))
-			.concat(engine.board.getTilesOnPath(x + (isShipHorizontal ? -1 : 1), y + (isShipHorizontal ? 1 : -1), isShipHorizontal, shipLength + 2))
+		const tilesTakenNextToPath = engine.board.getTilesOnPath(x - 1, y - 1, isShipHorizontal, shipLength + 2, true)
+			.concat(engine.board.getTilesOnPath(x + (isShipHorizontal ? -1 : 0), y + (isShipHorizontal ? 0 : -1), isShipHorizontal, shipLength + 2, true))
+			.concat(engine.board.getTilesOnPath(x + (isShipHorizontal ? -1 : 1), y + (isShipHorizontal ? 1 : -1), isShipHorizontal, shipLength + 2, true))
 			.map(tile => {
 				if (tile.containsShipOfPlayer(placerID))
 					return tile;
@@ -105,8 +105,10 @@ export default class BoardService {
 					const newShipData = BoardService.checkShipPlacement(roomID, playerID, x, y, isHorizontal, ship.length);
 					if (!newShipData.isPlacementAvailable)
 						placeShip();
-					else
+					else {
 						engine.board.writeTiles(engine.board.getTilesOnPath(x, y, isHorizontal, ship.length), playerID, TileStatuses.ships);
+						engine.playersShips.set(playerID, (engine.playersShips.get(playerID) ?? 0) + ship.length);
+					}
 				};
 				placeShip();
 			}

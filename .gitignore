@@ -9,6 +9,6 @@
 /yarn.lock
 
 # production
+/dist
 /logs
 /public
-/server

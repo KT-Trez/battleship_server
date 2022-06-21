@@ -7,7 +7,7 @@ import isInputCorrectUtil from '../utils/isInputCorrectUtil.js';
 export default function (socket: Socket<ClientToServerEvents>) {
 	socket.on('changeStatus', (roomID, readyStatus) => {
 		// check input
-		if (isInputCorrectUtil({input: roomID, type: 'number'}, {input: readyStatus, type: 'boolean'}))
+		if (!isInputCorrectUtil({input: roomID, type: 'number'}, {input: readyStatus, type: 'boolean'}))
 			return;
 
 		// change client's status

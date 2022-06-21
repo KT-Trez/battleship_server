@@ -7,7 +7,7 @@ import isInputCorrectUtil from '../utils/isInputCorrectUtil.js';
 export default function (socket: Socket<ClientToServerEvents>) {
 	socket.on('registerShipsRandom', (roomID, callback) => {
 		// check input
-		if (isInputCorrectUtil({input: roomID, type: 'number'}))
+		if (!isInputCorrectUtil({input: roomID, type: 'number'}))
 			return;
 
 		// place ships randomly and return map of all player's ships coordinates to the player

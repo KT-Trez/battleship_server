@@ -56,9 +56,9 @@ export default class Tile implements BoardTile {
 	 */
 	addShips(playerIDs: string | string[]) {
 		if (typeof playerIDs === 'string')
-			this.shootersIDsArr.push(playerIDs);
+			this.shipownersIDsArr.push(playerIDs);
 		else
-			this.shootersIDsArr.splice(this.shootersIDsArr.length, 0, ...playerIDs);
+			this.shipownersIDsArr.splice(this.shootersIDsArr.length, 0, ...playerIDs);
 	};
 
 	/**

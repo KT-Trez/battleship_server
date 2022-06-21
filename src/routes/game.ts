@@ -7,13 +7,13 @@ router.use(express.json());
 
 
 router.get('/map', (req, res) => {
+	const playerID = req.query.playerID as string;
 	const roomID = req.query.roomID as string;
-	const forceID = req.query.forceID as string;
 
-	if (!roomID || !forceID)
-		return res.sendStatus(404);
+	if (!roomID || !playerID)
+		return res.sendStatus(400);
 
-	const gameMap = BoardService.getCoordinatesOfPlayerShips(parseInt(roomID), forceID);
+	const gameMap = BoardService.getCoordinatesOfPlayerShips(parseInt(roomID), playerID);
 
 	res.send(JSON.stringify(gameMap));
 });

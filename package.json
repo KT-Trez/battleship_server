@@ -30,9 +30,9 @@
     "build": "tsc",
     "deamon": "nodemon server/server.js",
     "dev": "tsc -w",
-    "start": "node server/server.js"
+    "start": "node dist/server.js"
   },
   "type": "module",
   "private": true,
-  "version": "0.3.2"
+  "version": "0.3.3"
 }

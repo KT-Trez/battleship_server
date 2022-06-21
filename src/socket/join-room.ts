@@ -7,8 +7,8 @@ import isInputCorrectUtil from '../utils/isInputCorrectUtil.js';
 export default function (socket: Socket<ClientToServerEvents>) {
 	socket.on('joinRoom', (roomID, nick, callback) => {
 		// check input
-		if (isInputCorrectUtil({input: roomID, type: 'number'}, {input: nick, type: 'string'}))
-			return;
+		if (!isInputCorrectUtil({input: roomID, type: 'number'}, {input: nick, type: 'string'}))
+			return callback(false);
 
 		socket.join(roomID.toString());
 

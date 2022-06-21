@@ -1,6 +1,7 @@
-import {io} from '../../server.js';
+import {io} from '../server.js';
 import config from '../config.js';
 import {Client} from '../types/interfaces.js';
+import {debugLogger} from '../utils/loggerUtil.js';
 import Board from './Board.js';
 import Room from './Room.js';
 
@@ -9,11 +10,11 @@ export default class Engine {
 	board: Board;
 	room: Room;
 
-	private readonly allShipsElementsCount = 0;
+	readonly allShipsElementsCount = 0;
 	private gameEnded = false;
 	private gameStarted = false;
 	private players: Client[];
-	private playersShips: Map<string, number>
+	playersShips: Map<string, number>
 	private turn: NodeJS.Timeout;
 	private turnMaxTime: number;
 	private turnPlayerID: string;
@@ -32,19 +33,22 @@ export default class Engine {
 	private checkForWin(shipsLeft: number) {
 		if (shipsLeft <= 0) {
 			clearTimeout(this.turn);
-			console.log(this.turnPlayerID + ' wins!');
+			debugLogger.log(4, this.room.id + ': ' + this.turnPlayerID + ' wins!');
 
 			// todo: add multiple players
-			io.in(this.room.id.toString()).emit('win', this.turnPlayerID);
+			io.in(this.room.id.toString()).emit('win', this.players[this.turnPlayerIndex].nick);
 			return true;
 		}
 		return false;
 	}
 
+	hasGameEnded() {
+		return this.gameEnded;
+	}
+
 	private nextPlayer() {
 		this.turnPlayerIndex = (this.turnPlayerIndex + 1) % this.players.length;
 		this.turnPlayerID = this.players[this.turnPlayerIndex].id;
-		console.log(this.turnPlayerIndex, this.players);
 	}
 
 	registerShot(playerID: string, x: number, y: number) {
@@ -59,6 +63,8 @@ export default class Engine {
 
 		const enemyForcesIDsArr = tile.getShipownersExcludingOne(playerID);
 		if (enemyForcesIDsArr.length > 0) {
+			io.to(this.room.id.toString()).emit('shot', this.turnPlayerID, 'hit', {x, y}, enemyForcesIDsArr);
+
 			let hasSomeoneWon = false;
 			for (const player of enemyForcesIDsArr) {
 				const playerShipsCount = this.playersShips.get(player);
@@ -67,7 +73,6 @@ export default class Engine {
 				hasSomeoneWon = this.checkForWin(playerShipsCount - 1);
 			}
 
-			io.to(this.room.id.toString()).emit('shot', this.turnPlayerID, 'hit', {x, y}, enemyForcesIDsArr);
 			if (!hasSomeoneWon)
 				this.startTurn();
 
@@ -105,13 +110,10 @@ export default class Engine {
 		this.gameStarted = true;
 
 		this.players = this.room.getClients();
-		for (const player of this.players)
-			this.playersShips.set(player.id, this.allShipsElementsCount);
 		this.turnPlayerID = this.players[0].id;
 
 		// todo: debug only, remove later
-		console.log('Game ' + this.room.id + ' starting!');
-		console.log('Players:', this.players);
+		debugLogger.log(4, 'Starting game: ' + this.room.id);
 
 		io.in(this.room.id.toString()).emit('gameStarted', this.players);
 		this.startTurn();

@@ -3,15 +3,15 @@ import 'dotenv/config';
 import express from 'express';
 import {createServer} from 'http';
 import {Server} from 'socket.io';
-import {gameRouter} from './src/routes/game.js';
+import {gameRouter} from './routes/game.js';
 import {
 	ClientToServerEvents,
 	InterServerEvents,
 	ServerToClientEvents,
 	SocketData
-} from './src/types/socket.js';
-import {routeLogger, systemLogger} from './src/utils/loggerUtil.js';
-import socketUtil, {loadSocketEvents} from './src/utils/socketUtil.js';
+} from './types/socket.js';
+import {routeLogger, systemLogger} from './utils/loggerUtil.js';
+import socketUtil, {loadSocketEvents} from './utils/socketUtil.js';
 
 
 // initialize express
@@ -21,7 +21,7 @@ const httpServer = createServer(app);
 // initialize socket.io
 const io = new Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>(httpServer, {
 	cors: {
-		credentials: true,
+		credentials: false,
 		origin: process.env.WEB_ORIGIN ?? '*'
 	},
 	serveClient: false

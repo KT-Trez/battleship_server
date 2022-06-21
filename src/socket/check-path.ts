@@ -7,7 +7,7 @@ import isInputCorrectUtil from '../utils/isInputCorrectUtil.js';
 export default function (socket: Socket<ClientToServerEvents>) {
 	socket.on('checkPath', (roomID,coordinates, isHorizontal, pathLength, callback) => {
 		// check input
-		if (isInputCorrectUtil({input: roomID, type: 'number'}, {input: coordinates.x, type: 'number'}, {input: coordinates.y, type: 'number'}, {input: isHorizontal, type: 'boolean'}, {input: length, type: 'number'}))
+		if (!isInputCorrectUtil({input: roomID, type: 'number'}, {input: coordinates.x, type: 'number'}, {input: coordinates.y, type: 'number'}, {input: isHorizontal, type: 'boolean'}, {input: pathLength, type: 'number'}))
 			return;
 
 		// check and return placement data to client
